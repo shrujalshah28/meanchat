@@ -5,6 +5,8 @@ const express   = require('express'),
     path        = require('path'),
     http        = require('http');
 
+const apiRoutes = require('./api/routes');
+
 // Express app
 const app = express();
 
@@ -21,29 +23,15 @@ app.use(cors());
 // Angular DIST output folder
 app.use(express.static(path.join(__dirname, 'dist')));
 
+app.use('/api', apiRoutes);
+
 // Send all other requests to the Angular app
 app.get('/[^\.]+$', (req, res, next) => {
-    res.set('Content-Type', 'text/html').sendFile(path.join(__dirname, 'dist/index.html'));
-});
-
-// Error handaling
-app.use((req, res, next) => {
-    const error = new Error("Not found");
-    error.status = 404;
-    next(error);
-});
-  
-app.use((error, req, res, next) => {
-    res.status(error.status || 500);
-    res.json({
-        error: {
-            message: error.message
-        }
-    });
+  res.set('Content-Type', 'text/html').sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
 // Port
-const port = process.env.PORT || '3000';
+const port = process.env.PORT || '3001';
 app.set('port', port);
 
 const server = http.createServer(app);
