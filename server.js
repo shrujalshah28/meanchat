@@ -2,6 +2,7 @@ const express   = require('express'),
     bodyParser  = require('body-parser'),
     cors        = require('cors'),
     morgan      = require('morgan'),
+    mongoose    = require("mongoose"),
     path        = require('path'),
     http        = require('http');
 
@@ -9,6 +10,14 @@ const apiRoutes = require('./api/routes');
 
 // Express app
 const app = express();
+
+mongoose.connect(
+  "mongodb://localhost:27017/meanchatdb",
+  {
+    useMongoClient: true
+  }
+);
+mongoose.Promise = global.Promise;
 
 // Body parsers
 app.use(bodyParser.json());
@@ -23,6 +32,7 @@ app.use(cors());
 // Angular DIST output folder
 app.use(express.static(path.join(__dirname, 'dist')));
 
+// Send all api request.
 app.use('/api', apiRoutes);
 
 // Send all other requests to the Angular app
@@ -31,9 +41,9 @@ app.get('/[^\.]+$', (req, res, next) => {
 });
 
 // Port
-const port = process.env.PORT || '3001';
+const port = process.env.PORT || '3000';
 app.set('port', port);
 
 const server = http.createServer(app);
 
-server.listen(port, () => console.log(`Running on localhost: ${port}`));
+server.listen(port, () => console.log(`Server running on localhost: ${port}`));
