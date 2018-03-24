@@ -58,4 +58,14 @@ userSchema.methods.comparePassword = function (candidatePassword, cb) {
   });
 };
 
+userSchema.methods.comparePasswordPromise = function (candidatePassword) {
+  return new Promise(function (resolve, reject) {
+    bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
+      if (err) { reject(err) };
+      resolve(isMatch);
+    });
+  })
+
+}
+
 module.exports = mongoose.model('User', userSchema);

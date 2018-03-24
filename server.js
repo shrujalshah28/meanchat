@@ -7,12 +7,13 @@ const express   = require('express'),
     http        = require('http');
 
 const apiRoutes = require('./api/routes');
+const config = require('./api/config');
 
 // Express app
 const app = express();
 
 mongoose.connect(
-  "mongodb://localhost:27017/meanchatdb",
+  config.db || 'mongodb://localhost:27017/meanchatdb',
   {
     useMongoClient: true
   }
@@ -41,7 +42,7 @@ app.get('/[^\.]+$', (req, res, next) => {
 });
 
 // Port
-const port = process.env.PORT || '3000';
+const port = process.env.PORT || config.port || '3000';
 app.set('port', port);
 
 const server = http.createServer(app);
